@@ -1,86 +1,102 @@
 # Project Management API
 
-## Overview
-A RESTful Project Management API built using FastAPI. It supports user authentication, project management, task management, comments, file uploads, activity tracking, and role-based access control.
+A REST API built with **FastAPI** for managing projects and tasks.
 
-## Technologies Used
+## Features
+
+- User Registration & Login (JWT Authentication)
+- Create, Update, Delete Projects
+- Create, Update, Delete Tasks
+- Team Member Management
+- Comments on Tasks
+- Dashboard API
+- File Upload
+- Swagger API Documentation
+
+## Tech Stack
 
 - Python
 - FastAPI
 - SQLAlchemy
 - SQLite
-- JWT Authentication
-- OAuth2
 - Pydantic
-- Uvicorn
-
-## Features
-
-### Authentication
-- User Signup
-- User Login
 - JWT Authentication
+- Alembic
 
-### Projects
-- Create Project
-- View Projects
-- Update Project
-- Delete Project
+## Installation
 
-### Members
-- Add Members
-- View Members
-- Remove Members
-
-### Tasks
-- Create Task
-- View Tasks
-- Update Task
-- Delete Task
-
-### Dashboard
-- Project Dashboard
-
-### Activity
-- Activity Tracking
-
-### Comments
-- Add Comment
-- View Comments
-
-### File Upload
-- Upload Files
-- View Uploaded Files
-- Delete Uploaded Files
-
-## Run Project
-
-Create virtual environment
+Clone the repository
 
 ```bash
-python3 -m venv venv
+git clone git@github.com:2shiva/project-management-api.git
 ```
 
-Activate
+Go to the project folder
+
+```bash
+cd project-management-api
+```
+
+Create a virtual environment
+
+```bash
+python -m venv venv
+```
+
+Activate the virtual environment
+
+**macOS/Linux**
 
 ```bash
 source venv/bin/activate
 ```
 
-Install packages
+**Windows**
+
+```bash
+venv\Scripts\activate
+```
+
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run
+Run the server
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Swagger
+## API Documentation
+
+Swagger UI
 
 ```
 http://127.0.0.1:8000/docs
 ```
+
+ReDoc
+
+```
+http://127.0.0.1:8000/redoc
+```
+
+## Project Structure
+
+```
+project-management-api
+│
+├── app/
+├── alembic/
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+## Author
+
+**Shiva**
+
+GitHub: https://github.com/2shiva
