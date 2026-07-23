@@ -1,13 +1,12 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
 from app.database import Base
 
 
-# -----------------------
+
 # User Table
-# -----------------------
 class User(Base):
     __tablename__ = "users"
 
@@ -21,9 +20,9 @@ class User(Base):
     assigned_tasks = relationship("Task", back_populates="assignee")
 
 
-# -----------------------
+
 # Project Table
-# -----------------------
+
 class Project(Base):
     __tablename__ = "projects"
 
@@ -40,9 +39,9 @@ class Project(Base):
     members = relationship("ProjectMember", back_populates="project")
 
 
-# -----------------------
+
 # Project Members Table
-# -----------------------
+
 class ProjectMember(Base):
     __tablename__ = "project_members"
 
@@ -55,9 +54,9 @@ class ProjectMember(Base):
     user = relationship("User")
 
 
-# -----------------------
+
 # Task Table
-# -----------------------
+
 class Task(Base):
     __tablename__ = "tasks"
 
@@ -76,26 +75,34 @@ class Task(Base):
 
     assignee = relationship("User", back_populates="assigned_tasks")
     project = relationship("Project", back_populates="tasks")
-    
-    # -----------------------
+
+
+
 # Activity Log Table
-# -----------------------
+
 class ActivityLog(Base):
     __tablename__ = "activity_logs"
 
     id = Column(Integer, primary_key=True, index=True)
 
+    user_id = Column(Integer, ForeignKey("users.id"))
+
     action = Column(String, nullable=False)
 
-    user_id = Column(Integer, ForeignKey("users.id"))
+    entity_type = Column(String, nullable=False)
+
+    entity_id = Column(Integer, nullable=False)
+
+    description = Column(Text)
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User")
-    
-    # -----------------------
+
+
+
 # Comment Table
-# -----------------------
+
 class Comment(Base):
     __tablename__ = "comments"
 
@@ -111,10 +118,11 @@ class Comment(Base):
 
     task = relationship("Task")
     user = relationship("User")
-    
-    # -----------------------
+
+
+
 # File Upload Table
-# -----------------------
+
 class FileUpload(Base):
     __tablename__ = "file_uploads"
 
@@ -131,4 +139,48 @@ class FileUpload(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     task = relationship("Task")
+    user = relationship("User")
+
+
+
+# Notification Table
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    title = Column(String, nullable=False)
+
+    message = Column(String, nullable=False)
+
+    is_read = Column(Boolean, default=False)
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User")
+
+# Audit Log Table
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    entity_type = Column(String, nullable=False)
+
+    entity_id = Column(Integer, nullable=False)
+
+    field_name = Column(String, nullable=False)
+
+    old_value = Column(String)
+
+    new_value = Column(String)
+
+    changed_by = Column(Integer, ForeignKey("users.id"))
+
+    changed_at = Column(DateTime, default=datetime.utcnow)
+
     user = relationship("User")

@@ -11,8 +11,12 @@ import app.routers.dashboard as dashboard
 import app.routers.activity as activity
 import app.routers.comments as comments
 import app.routers.uploads as uploads
+import app.routers.notifications as notifications
+import app.routers.activity_logs as activity_logs
+import app.routers.audit_logs as audit_logs
 
 # Create database tables
+
 Base.metadata.create_all(bind=engine)
 
 # Create uploads folder if it doesn't exist
@@ -23,6 +27,7 @@ app = FastAPI(
 )
 
 # Register Routers
+
 app.include_router(auth.router)
 app.include_router(projects.router)
 app.include_router(tasks.router)
@@ -31,8 +36,12 @@ app.include_router(dashboard.router)
 app.include_router(activity.router)
 app.include_router(comments.router)
 app.include_router(uploads.router)
+app.include_router(notifications.router)
+app.include_router(activity_logs.router)
+app.include_router(audit_logs.router)
 
 # Serve uploaded files
+
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 

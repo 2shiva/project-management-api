@@ -53,41 +53,36 @@ def create_task(
 
     # Activity Log
     activity = models.ActivityLog(
-        action=f"Created task: {new_task.title}",
-        user_id=current_user["user_id"]
+        user_id=current_user["user_id"],
+        action="Task Created",
+        entity_type="Task",
+        entity_id=new_task.id,
+        description=f"Created task '{new_task.title}'"
     )
 
     db.add(activity)
+
+    # Notification
+    notification = models.Notification(
+        user_id=task.assigned_to,
+        title="New Task Assigned",
+        message=f"You have been assigned the task '{new_task.title}'."
+    )
+
+    db.add(notification)
+
     db.commit()
 
     return new_task
 
 
-# Get All Tasks (Search + Pagination)
+# Get All Tasks
 @router.get("/", response_model=list[schemas.TaskResponse])
 def get_tasks(
-    page: int = 1,
-    limit: int = 5,
-    status: str | None = None,
-    priority: str | None = None,
-    assigned_to: int | None = None,
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
-    query = db.query(models.Task)
-
-    if status:
-        query = query.filter(models.Task.status == status)
-
-    if priority:
-        query = query.filter(models.Task.priority == priority)
-
-    if assigned_to:
-        query = query.filter(models.Task.assigned_to == assigned_to)
-
-    skip = (page - 1) * limit
-
-    return query.offset(skip).limit(limit).all()
+    return db.query(models.Task).all()
 
 
 # Get Single Task
@@ -128,6 +123,10 @@ def update_task(
             detail="Task not found"
         )
 
+    # Save old values
+    old_status = db_task.status
+
+    # Update task
     db_task.title = task.title
     db_task.description = task.description
     db_task.status = task.status
@@ -137,6 +136,30 @@ def update_task(
 
     db.commit()
     db.refresh(db_task)
+
+    # Activity Log
+    activity = models.ActivityLog(
+        user_id=current_user["user_id"],
+        action="Task Updated",
+        entity_type="Task",
+        entity_id=db_task.id,
+        description=f"Updated task '{db_task.title}'"
+    )
+    db.add(activity)
+
+    # Audit Log (Status Change)
+    if old_status != db_task.status:
+        audit = models.AuditLog(
+            entity_type="Task",
+            entity_id=db_task.id,
+            field_name="status",
+            old_value=old_status,
+            new_value=db_task.status,
+            changed_by=current_user["user_id"]
+        )
+        db.add(audit)
+
+    db.commit()
 
     return db_task
 

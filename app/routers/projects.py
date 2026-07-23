@@ -30,8 +30,11 @@ def create_project(
 
     # Activity Log
     activity = models.ActivityLog(
+        user_id=current_user["user_id"],
         action=f"Created project: {new_project.name}",
-        user_id=current_user["user_id"]
+        entity_type="Project",
+        entity_id=new_project.id,
+        description=f"Project '{new_project.name}' was created."
     )
 
     db.add(activity)

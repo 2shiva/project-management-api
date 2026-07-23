@@ -1,9 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
-# -----------------------
 # User Schemas
-# -----------------------
 class UserCreate(BaseModel):
     full_name: str
     email: EmailStr
@@ -26,17 +24,14 @@ class UserLogin(BaseModel):
     password: str
 
 
-# -----------------------
+
 # JWT Token
-# -----------------------
 class Token(BaseModel):
     access_token: str
     token_type: str
 
 
-# -----------------------
 # Project Schemas
-# -----------------------
 class ProjectCreate(BaseModel):
     name: str
     description: str
@@ -58,9 +53,7 @@ class ProjectResponse(BaseModel):
         from_attributes = True
 
 
-# -----------------------
 # Task Schemas
-# -----------------------
 class TaskCreate(BaseModel):
     title: str
     description: str
@@ -93,9 +86,9 @@ class TaskResponse(BaseModel):
         from_attributes = True
 
 
-# -----------------------
+
 # Project Member Schemas
-# -----------------------
+
 class ProjectMemberCreate(BaseModel):
     user_id: int
 
@@ -108,9 +101,7 @@ class ProjectMemberResponse(BaseModel):
     class Config:
         from_attributes = True
         
-# -----------------------
 # Comment Schemas
-# -----------------------
 
 class CommentCreate(BaseModel):
     comment: str
@@ -121,6 +112,22 @@ class CommentResponse(BaseModel):
     comment: str
     task_id: int
     user_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# Notification Schemas
+
+
+from datetime import datetime
+
+class NotificationResponse(BaseModel):
+    id: int
+    user_id: int
+    title: str
+    message: str
+    is_read: bool
     created_at: datetime
 
     class Config:
